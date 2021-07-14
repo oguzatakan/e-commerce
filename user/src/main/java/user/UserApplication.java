@@ -5,8 +5,8 @@ import org.apache.catalina.User;
 import org.springframework.boot.SpringApplication;
 
 
-@SpringBootApplication
+//@SpringBootApplication
 public class UserApplication {
 
-   public static void main(String[] args){ SpringApplication.run(User.class,args); }
+   //public static void main(String[] args){ SpringApplication.run(User.class,args); }
 }
