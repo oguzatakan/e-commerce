@@ -8,5 +8,5 @@ import org.springframework.boot.SpringApplication;
 @SpringBootApplication
 public class UserApplication {
 
-    public static void main(String[] args){ SpringApplication.run(User.class,args); }
+   public static void main(String[] args){ SpringApplication.run(User.class,args); }
 }
