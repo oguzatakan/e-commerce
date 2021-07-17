@@ -1,12 +1,16 @@
 package user.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import user.dto.CreateUserRequest;
 import user.dto.UpdateUserRequest;
 import user.dto.UserDto;
 import user.dto.converter.UserDtoConverter;
+import user.exception.UserIsNotActiveException;
 import user.exception.UserNotFoundException;
 import user.model.User;
-import user.repository.UserRepository;
+import user.model.UserInformation;
+import user.repository.UserInformationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,50 +19,95 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-    private final UserRepository userRepository;
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
+    private final UserInformationRepository userInformationRepository;
     private final UserDtoConverter userDtoConverter;
 
-    public UserService(UserRepository userRepository, UserDtoConverter userDtoConverter) {
-        this.userRepository = userRepository;
+    public UserService(UserInformationRepository userInformationRepository, UserDtoConverter userDtoConverter) {
+        this.userInformationRepository = userInformationRepository;
         this.userDtoConverter = userDtoConverter;
     }
 
 
-    private User findUserById(Long id){
-        return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User could not be found by following id: " + id));
-    }
-
-
     public List<UserDto> getAllUsers() {
-        return userRepository.findAll().stream().map(userDtoConverter::convert).collect(Collectors.toList());
+        return userInformationRepository.findAll().stream().map(userDtoConverter::convert).collect(Collectors.toList());
     }
 
 
-    public UserDto getUserById(Long id){
-        User user = findUserById(id);
-        return userDtoConverter.convert(user);
+    public UserDto getUserByMail(String mail){
+        UserInformation userInformation = findUserByMail(mail);
+        return userDtoConverter.convert(userInformation);
     }
 
 
     public UserDto createUser(CreateUserRequest userRequest) {
-        User user = new User( null,
-                userRequest.getMail(),
+        UserInformation userInformation = new UserInformation(userRequest.getMail(),
                 userRequest.getFirstName(),
                 userRequest.getLastName(),
-                userRequest.getMiddleName());
-        return userDtoConverter.convert(userRepository.save(user));
+                userRequest.getMiddleName(),
+                true);
+
+        return userDtoConverter.convert(userInformationRepository.save(userInformation));
     }
 
 
-    public UserDto updateUser(Long id ,UpdateUserRequest updateUserRequest) {
-
-        User user = findUserById(id);
-        User updatedUser = new User(user.getId(),
-                user.getMail(),
+    public UserDto updateUser(String mail ,UpdateUserRequest updateUserRequest) {
+        UserInformation userInformation = findUserByMail(mail);
+        if (!userInformation.getActive()){
+            logger.warn(String.format("The user wanted update is not active!, user mail: %s", mail));
+            throw new UserIsNotActiveException();
+        }
+        UserInformation updatedUserInformation = new UserInformation(userInformation.getId(),
+                userInformation.getMail(),
                 updateUserRequest.getFirstName(),
                 updateUserRequest.getLastName(),
                 updateUserRequest.getMiddleName());
-        return userDtoConverter.convert(userRepository.save(updatedUser));
+        return userDtoConverter.convert(userInformationRepository.save(updatedUserInformation));
+    }
+
+    public void deactivateUser(Long id) {
+        changeActivateUser(id,false);
+
+    }
+
+    public void activeUser(Long id) {
+        changeActivateUser(id,true);
+    }
+
+    private void changeActivateUser(Long id, Boolean isActive){
+        UserInformation userInformation = findUserById(id);
+        UserInformation updatedUserInformation = new UserInformation(userInformation.getId(),
+                userInformation.getMail(),
+                userInformation.getFirstName(),
+                userInformation.getLastName(),
+                userInformation.getMiddleName(),
+                isActive);
+        userInformationRepository.save(updatedUserInformation);
+    }
+
+    private UserInformation findUserByMail(String mail) {
+        return userInformationRepository.findByMail(mail)
+                .orElseThrow(() -> new UserNotFoundException("User couldn't be found by following mail: " + mail));
+    }
+
+    private UserInformation findUserById(Long id) {
+        return userInformationRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User couldn't be found by following id: " + id));
+    }
+
+    private boolean doesUserExist(Long id){
+        return userInformationRepository.existsById(id);
+
+    }
+
+
+    public void deleteUser(Long id) {
+        if (doesUserExist(id)) {
+            userInformationRepository.deleteById(id);
+        } else {
+            throw new UserNotFoundException("User couldn't be found by following id: " + id);
+        }
+
     }
 }
