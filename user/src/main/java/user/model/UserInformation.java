@@ -2,6 +2,7 @@ package user.model;
 
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class UserInformation {
@@ -68,5 +69,18 @@ public class UserInformation {
 
     public Boolean getActive() {
         return isActive;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserInformation that = (UserInformation) o;
+        return Objects.equals(id, that.id) && Objects.equals(mail, that.mail) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(middleName, that.middleName) && Objects.equals(isActive, that.isActive);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, mail, firstName, lastName, middleName, isActive);
     }
 }

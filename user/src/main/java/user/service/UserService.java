@@ -31,7 +31,8 @@ public class UserService {
 
 
     public List<UserDto> getAllUsers() {
-        return userInformationRepository.findAll().stream().map(userDtoConverter::convert).collect(Collectors.toList());
+
+        return userDtoConverter.convert(userInformationRepository.findAll());
     }
 
 
@@ -46,7 +47,7 @@ public class UserService {
                 userRequest.getFirstName(),
                 userRequest.getLastName(),
                 userRequest.getMiddleName(),
-                true);
+                false);
 
         return userDtoConverter.convert(userInformationRepository.save(userInformation));
     }
