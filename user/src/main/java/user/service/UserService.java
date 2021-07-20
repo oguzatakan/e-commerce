@@ -63,7 +63,8 @@ public class UserService {
                 userInformation.getMail(),
                 updateUserRequest.getFirstName(),
                 updateUserRequest.getLastName(),
-                updateUserRequest.getMiddleName());
+                updateUserRequest.getMiddleName(),
+                userInformation.getActive());
         return userDtoConverter.convert(userInformationRepository.save(updatedUserInformation));
     }
 

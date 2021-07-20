@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import user.dto.CreateUserRequest;
+import user.dto.UpdateUserRequest;
 import user.dto.UserDto;
 import user.dto.converter.UserDtoConverter;
 import user.exception.UserNotFoundException;
@@ -98,6 +99,30 @@ public class UserServiceTest extends TestSupport{
 
         assertEquals(userDto,result);
         verify(repository).save(user);
+        verify(converter).convert(savedUser);
+
+    }
+
+    @Test
+    public void testUpdateUser_whenUserMailExistAndUserIsActive_itShouldReturnUpdatedUserDto(){
+
+        String mail = "mail@atakanoguzdev.net";
+        UpdateUserRequest request = new UpdateUserRequest("firstName2", "lastName2", "middleName");
+        UserInformation user = new UserInformation(1L,mail,"firstName", "lastName", "",true);
+        UserInformation updateUser = new UserInformation(1L,mail,"firstName2", "lastName2", "middleName",true);
+        UserInformation savedUser = new UserInformation(1L,mail,"firstName2", "lastName2", "middleName",true);
+        UserDto userDto = new UserDto(mail,"firstName2", "lastName2", "middleName");
+
+        when(repository.findByMail(mail)).thenReturn(Optional.of(user));
+        when(repository.save(updateUser)).thenReturn(savedUser);
+        when(converter.convert(savedUser)).thenReturn(userDto);
+
+        UserDto result = userService.updateUser(mail,request);
+
+        assertEquals(userDto,result);
+
+        verify(repository).findByMail(mail);
+        verify(repository).save(updateUser);
         verify(converter).convert(savedUser);
 
     }
