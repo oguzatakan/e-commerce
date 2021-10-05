@@ -1,5 +1,6 @@
 package user.service;
 
+import org.assertj.core.util.Lists;
 import user.dto.UserDto;
 import user.model.Users;
 
@@ -24,7 +25,7 @@ public class TestSupport {
 
     public static List<UserDto> generateUserDtoList(List<Users> userList){
        return userList.stream()
-               .map(from -> new UserDto(from.getMail(), from.getFirstName(), from.getLastName(), from.getMiddleName()))
+               .map(from -> new UserDto(from.getMail(), from.getFirstName(), from.getLastName(), from.getMiddleName(), Lists.emptyList()))
                .collect(Collectors.toList());
     }
 
@@ -40,7 +41,7 @@ public class TestSupport {
 
     public static UserDto generateUserDto(String mail){
 
-        return new UserDto(mail, "firstName" + userId, "lastName" + userId, "");
+        return new UserDto(mail, "firstName" + userId, "lastName" + userId, "", Lists.emptyList());
 
     }
 

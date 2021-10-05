@@ -1,5 +1,6 @@
 package user.service;
 
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import user.dto.CreateUserRequest;
@@ -89,7 +90,7 @@ public class UserServiceTest extends TestSupport{
         CreateUserRequest request = new CreateUserRequest(mail, "firstName", "lastName", "");
         Users user = new Users(mail,"firstName", "lastName", "",false);
         Users savedUser = new Users(1L,mail,"firstName", "lastName", "",false);
-        UserDto userDto = new UserDto(mail,"firstName", "lastName", "");
+        UserDto userDto = new UserDto(mail,"firstName", "lastName", "", Lists.emptyList());
 
 
         when(repository.save(user)).thenReturn(savedUser);
@@ -111,7 +112,7 @@ public class UserServiceTest extends TestSupport{
         Users user = new Users(1L,mail,"firstName", "lastName", "",true);
         Users updateUser = new Users(1L,mail,"firstName2", "lastName2", "middleName",true);
         Users savedUser = new Users(1L,mail,"firstName2", "lastName2", "middleName",true);
-        UserDto userDto = new UserDto(mail,"firstName2", "lastName2", "middleName");
+        UserDto userDto = new UserDto(mail,"firstName2", "lastName2", "middleName", Lists.emptyList());
 
         when(repository.findByMail(mail)).thenReturn(Optional.of(user));
         when(repository.save(updateUser)).thenReturn(savedUser);
