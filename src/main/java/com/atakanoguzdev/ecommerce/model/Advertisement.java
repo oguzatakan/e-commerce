@@ -9,6 +9,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashSet;
@@ -30,7 +31,7 @@ public class Advertisement {
     @Field(type = FieldType.Keyword)
     private String description;
 
-    private Double price;
+    private Double price; //TODO change it by BigDecimal
 
     @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
     private Date creationDate;
