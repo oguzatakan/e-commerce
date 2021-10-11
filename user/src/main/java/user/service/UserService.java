@@ -103,4 +103,8 @@ public class UserService {
         usersRepository.deleteById(id);
 
     }
+
+    public Boolean isUserIdExist(Long id) {
+        return usersRepository.existsById(id);
+    }
 }

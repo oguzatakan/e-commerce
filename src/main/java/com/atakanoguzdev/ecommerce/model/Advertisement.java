@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
@@ -34,10 +35,10 @@ public class Advertisement {
     private Double price; //TODO change it by BigDecimal
 
     @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
-    private Date creationDate;
+    private LocalDateTime creationDate;
 
     @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
-    private Date lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 
     private Long userId;
 
@@ -47,11 +48,46 @@ public class Advertisement {
 
     }
 
-    public Advertisement(String title, String description, Double price, Long userId, Set<String> hashtags) {
-        this(title, description, price, Date.from(Instant.now()), Date.from(Instant.now()), userId, hashtags);
+    public Advertisement(String title,
+                         String description,
+                         Double price,
+                         Long userId,
+                         Set<String> hashtags) {
+        this(title,
+                description,
+                price,
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                userId,
+                hashtags);
     }
 
-    public Advertisement(String title, String description, Double price, Date creationDate, Date lastModifiedDate, Long userId, Set<String> hashtags) {
+    public Advertisement(String title,
+                         String description,
+                         Double price,
+                         LocalDateTime creationDate,
+                         LocalDateTime lastModifiedDate,
+                         Long userId,
+                         Set<String> hashtags) {
+        this.title = title;
+        this.description = description;
+        this.price = price;
+        this.creationDate = creationDate;
+        this.lastModifiedDate = lastModifiedDate;
+        this.userId = userId;
+        this.hashtags = hashtags;
+    }
+
+    public Advertisement(String id,
+                         String title,
+                         String description,
+                         Double price,
+                         LocalDateTime creationDate,
+                         LocalDateTime lastModifiedDate,
+                         Long userId,
+                         Set<String> hashtags) {
+
+        this.id = id;
         this.title = title;
         this.description = description;
         this.price = price;
@@ -77,11 +113,11 @@ public class Advertisement {
         return price;
     }
 
-    public Date getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public Date getLastModifiedDate() {
+    public LocalDateTime getLastModifiedDate() {
         return lastModifiedDate;
     }
 
